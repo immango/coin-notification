@@ -1,7 +1,8 @@
-package com.example.coin.notification.service;
+package com.ldh.coin.notification.service;
 
-import com.example.coin.notification.common.CoinEnum;
-import com.example.coin.notification.entity.AnnouncementEntity;
+import com.ldh.coin.notification.alarm.event.CoinEvent;
+import com.ldh.coin.notification.common.CoinEnum;
+import com.ldh.coin.notification.entity.AnnouncementEntity;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,6 +12,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +31,7 @@ public class CoinService {
      * 匹配次数，如果超过该数量代表这个公告是有关纪念币
      */
     private int matchCoinCount = 3;
+    private ApplicationEventPublisher publisher;
 
     public void getCoinInformation(CoinEnum browserType, String driverPath, String url) {
         WebDriver webDriver = getPageDetail(browserType, driverPath, url);
@@ -51,7 +55,9 @@ public class CoinService {
     /**
      * 针对 中国人民银行-新闻发布一栏的内容
      * 查找有关纪念币的公告
-     * @param element
+     * @param browserType 浏览器类型
+     * @param driverPath 驱动路径
+     * @param element element
      */
     public void coinHelper(CoinEnum browserType, String driverPath, WebElement element) {
         WebElement a = element.findElement(By.cssSelector("a"));
@@ -75,12 +81,12 @@ public class CoinService {
             AnnouncementEntity announcementEntity = new AnnouncementEntity();
             coinAnnouncement(webDriver, announcementEntity);
 
-            // 发送消息通知
+            // 发送事件
             if (announcementEntity.isCoin()) {
                 announcementEntity.setUrl(detailUrl);
                 announcementEntity.setTitle(detailTitle);
                 announcementEntity.setDate(detailDate);
-                System.out.println("COIN");
+                publisher.publishEvent(new CoinEvent(announcementEntity));
             }
         }
     }
@@ -164,5 +170,10 @@ public class CoinService {
             e.printStackTrace();
         }
         return webDriver;
+    }
+
+    @Autowired
+    public void setPublisher(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
     }
 }

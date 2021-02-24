@@ -1,9 +1,9 @@
-package com.example.coin.notification.api;
+package com.ldh.coin.notification.api;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author mango
- * @description 简述这个类的作用
+ * @description api接口(备用)
  * @date 2021/1/31 16:35
  */
 @RestController

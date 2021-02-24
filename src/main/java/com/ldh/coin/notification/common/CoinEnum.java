@@ -1,4 +1,4 @@
-package com.example.coin.notification.common;
+package com.ldh.coin.notification.common;
 
 /**
  * @author mango

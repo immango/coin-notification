@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'junit:junit:4.12'
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
