@@ -1,12 +1,14 @@
-package com.ldh.coin.notification.alarm.email;
+package com.ldh.coin.notification.service;
 
-import com.ldh.coin.notification.alarm.event.CoinEvent;
 import com.ldh.coin.notification.entity.AnnouncementEntity;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.internet.MimeMessage;
 import java.text.MessageFormat;
@@ -14,27 +16,23 @@ import java.time.LocalDateTime;
 
 import static com.ldh.coin.notification.alarm.email.EmailTemplate.getEmailTemplate;
 
-/**
- * @author mango
- * @description 简述这个类的作用
- * @date 2021/2/24 22:01
- */
-@Service
-public class EmailAlarmImpl implements ApplicationListener<CoinEvent> {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class MailTest {
+
     private JavaMailSender mailSender;
 
-    @Override
-    public void onApplicationEvent(CoinEvent event) {
+    @Test
+    public void sendMailTest() {
         try {
-            AnnouncementEntity announcementEntity = event.getAnnouncementEntity();
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom("Notification.ES@foxmail.com");
             mimeMessageHelper.setTo("1807659863@qq.com");
             mimeMessageHelper.setSubject("纪念币通知提醒");
-            String email = MessageFormat.format(getEmailTemplate(), announcementEntity.getTitle(),
-                    announcementEntity.getDate(), announcementEntity.getDetail(),
-                    announcementEntity.getUrl(), announcementEntity.getUrl(), LocalDateTime.now());
+            String email = MessageFormat.format(getEmailTemplate(), "announcementEntity.getTitle()",
+                    "announcementEntity.getDate()", "announcementEntity.getDetail()",
+                    "announcementEntity.getUrl()", "announcementEntity.getUrl()", LocalDateTime.now().toString().split("\\.")[0]);
             mimeMessageHelper.setText(email, true);
             mailSender.send(mimeMessage);
         }catch (Exception e) {
