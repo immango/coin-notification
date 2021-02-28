@@ -1,7 +1,7 @@
 package com.ldh.coin.notification.alarm.email;
 
 /**
- * @author 80261307
+ * @author mango
  */
 public class EmailTemplate {
     public static String getEmailTemplate() {

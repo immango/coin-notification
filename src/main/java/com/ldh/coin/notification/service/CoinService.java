@@ -12,6 +12,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class CoinService {
      */
     private int matchCoinCount = 3;
     private ApplicationEventPublisher publisher;
+    private final Logger log = LoggerFactory.getLogger(CoinService.class);
 
     public void getCoinInformation(CoinEnum browserType, String driverPath, String url) {
         WebDriver webDriver = getPageDetail(browserType, driverPath, url);
@@ -45,8 +48,9 @@ public class CoinService {
             for (WebElement e : table) {
                 coinHelper(browserType, driverPath, e);
             }
+            log.info("当前页面分析结束: {}", url);
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取原始页面数据发生异常: ", e);
         }finally {
             webDriver.quit();
         }
@@ -87,6 +91,7 @@ public class CoinService {
                 announcementEntity.setTitle(detailTitle);
                 announcementEntity.setDate(detailDate);
                 publisher.publishEvent(new CoinEvent(announcementEntity));
+                log.info("已检测到纪念币相关信息，已发送对应事件。简略信息为: {}", announcementEntity.getTitle());
             }
         }
     }
@@ -119,7 +124,7 @@ public class CoinService {
             announcementEntity.setCoin(countOfCoin >= matchCoinCount);
 
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("解析HTML数据发生异常: ", e);
         }finally {
             webDriver.quit();
         }
@@ -167,7 +172,7 @@ public class CoinService {
             }
         }catch (Exception e) {
             // 创建对应浏览器发生异常
-            e.printStackTrace();
+            log.error("构建对应的浏览器发生异常, 当前驱动版本为: {}, 当前驱动路径为: {}",browserType, driverPath, e);
         }
         return webDriver;
     }
