@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -143,7 +144,16 @@ public class CoinService {
         try {
             switch (browserType) {
                 case CHROME: {
-                    webDriver = new ChromeDriver();
+                    ChromeOptions chromeOptions = new ChromeOptions();
+                    // 不开启界面
+                    chromeOptions.addArguments("--headless");
+                    // 图形化界面下启用关闭沙箱模式 解决DevToolsActivePort文件不存在报错问题
+                    chromeOptions.addArguments("--no-sandbox");
+                    // 禁用GPU硬件加速。如果软件渲染器没有就位，则GPU进程将不会启动
+                    chromeOptions.addArguments("--disable-gpu");
+                    // 不加载图片 获得速度优化
+                    chromeOptions.addArguments("blink-settings=imagesEnabled=false");
+                    webDriver = new ChromeDriver(chromeOptions);
                     break;
                 }
                 case FIREFOX: {
