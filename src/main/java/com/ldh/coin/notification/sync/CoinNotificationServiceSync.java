@@ -30,7 +30,7 @@ public class CoinNotificationServiceSync {
     private CoinService coinService;
     private final Logger log = LoggerFactory.getLogger(CoinNotificationServiceSync.class);
 
-    @Scheduled(cron = "0 0 10,18,23 * * ?")
+    @Scheduled(cron = "0 0 18 * * ?")
     public void coinTask() {
         log.info("纪念币定时任务已启动: {}", LocalDateTime.now());
         coinService.getCoinInformation(browserType, driverPath, url);

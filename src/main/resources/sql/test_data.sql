@@ -1,0 +1,1 @@
+insert into t_coin_notification_alarm values (1, "coin-notifi-test", "EMAIL", "coin-notifi-test", "coin-notifi-test", "2022-03-19");
